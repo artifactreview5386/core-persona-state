@@ -1,0 +1,49 @@
+name: CORE offline checks
+
+on:
+  pull_request:
+    paths:
+      - "core/**"
+      - "train/**"
+      - "configs/**"
+      - "openrlhf/core/**"
+      - "openrlhf/cli/**"
+      - "examples/**"
+      - "scripts/**"
+      - "tests/**"
+      - "README.md"
+      - "ARTIFACT_EVALUATION.md"
+      - "CODE_PAPER_ALIGNMENT.md"
+      - "DATA_FORMAT.md"
+      - "requirements*.txt"
+      - "pyproject.toml"
+      - ".github/workflows/core-offline.yml"
+  workflow_dispatch:
+
+jobs:
+  core-offline:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install lightweight test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Validate CORE config
+        run: python -m openrlhf.cli.validate_core_config --config examples/core_config.yaml --check_paths
+
+      - name: Run CORE preflight
+        run: python -m openrlhf.cli.core_preflight --check-paths
+
+      - name: Validate CORE dialogue schema
+        run: python -m openrlhf.cli.validate_core_dataset --path examples/datasets/core_dialogue_schema_example.jsonl --format dialogue
+
+      - name: Run CORE unit tests
+        run: python -m pytest tests

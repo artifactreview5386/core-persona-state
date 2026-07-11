@@ -1,0 +1,57 @@
+experiment:
+  name: "paper_faithful_core"
+  seed: 42
+
+model:
+  context_dim: 16
+  slot_dim: 12
+  value_dim: 10
+  belief_dim: 8
+  hidden_dim: 32
+  vocab_size: 32
+
+evidence:
+  delta_max: 10.0
+  robust_scale_min_values: 4
+
+uncertainty:
+  hidden_dim: 32
+
+uncertainty_calibration:
+  learning_rate: 1.0e-4
+  batch_size: 1
+  epochs: 1
+
+belief:
+  new_value_prior: 1.0e-6
+
+thresholds:
+  relevance: 0.05
+
+sft:
+  learning_rate: 1.0e-4
+  batch_size: 1
+  epochs: 1
+  lambda_evi: 1.0
+  lambda_upd: 1.0
+  lambda_dis: 1.0
+  lambda_resp: 1.0
+
+reward:
+  action: 0.35
+  state: 0.30
+  answer: 0.25
+  clarification: 0.10
+  kl_beta: 0.05
+
+ppo:
+  freeze_uncertainty_head: true
+  clip_range: 0.2
+  value_coef: 0.5
+  entropy_coef: 0.01
+  gae_lambda: 0.95
+  discount: 0.99
+  effective_batch_size: 128
+  epochs_per_batch: 4
+  max_grad_norm: 1.0
+  reference_policy: "frozen_sft_checkpoint"

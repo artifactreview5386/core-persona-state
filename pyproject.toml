@@ -1,0 +1,3 @@
+[tool.pytest.ini_options]
+addopts = "--verbose --strict-markers"
+testpaths = ["tests"]
